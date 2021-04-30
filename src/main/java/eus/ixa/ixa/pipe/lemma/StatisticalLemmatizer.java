@@ -15,20 +15,17 @@
  */
 package eus.ixa.ixa.pipe.lemma;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-
 import eus.ixa.ixa.pipe.pos.Morpheme;
 import eus.ixa.ixa.pipe.pos.MorphoFactory;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Probabilistic lemmatizer.
@@ -76,6 +73,22 @@ public class StatisticalLemmatizer {
     final String model = props.getProperty("lemmatizerModel");
     final Boolean useModelCache = Boolean.valueOf(props.getProperty("useModelCache", "true"));
     final LemmatizerModel posModel = loadModel(lang, model, useModelCache);
+    this.lemmatizer = new LemmatizerME(posModel);
+    this.morphoFactory = aMorphoFactory;
+  }
+
+  /**
+   * Construct a statistical lemmatizer with {@code MorphoFactory}.
+   *
+   * @param props
+   *          the properties object
+   * @param aMorphoFactory
+   *          the morpho factory
+   */
+  public StatisticalLemmatizer(final InputStream modelAsStream, final Properties props, final MorphoFactory aMorphoFactory) {
+    final String lang = props.getProperty("language");
+    final Boolean useModelCache = Boolean.valueOf(props.getProperty("useModelCache", "true"));
+    final LemmatizerModel posModel = loadModelAsStream(lang, modelAsStream, useModelCache);
     this.lemmatizer = new LemmatizerME(posModel);
     this.morphoFactory = aMorphoFactory;
   }
@@ -160,18 +173,42 @@ public class StatisticalLemmatizer {
    * @return the model as a {@link LemmatizerModel} object
    */
   private LemmatizerModel loadModel(final String lang, final String modelName, final Boolean useModelCache) {
+    FileInputStream fileInputStream;
+    try {
+      fileInputStream = new FileInputStream(modelName);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+
+    return loadModelAsStream(lang,fileInputStream, useModelCache);
+  }
+
+  /**
+   * Loads statically the probabilistic model. Every instance of this finder
+   * will share the same model.
+   *
+   * @param lang
+   *          the language
+   * @param modelAsStream
+   *          the model to be loaded
+   * @param useModelCache
+   *          whether to cache the model in memory
+   * @return the model as a {@link LemmatizerModel} object
+   */
+  private LemmatizerModel loadModelAsStream(final String lang, final InputStream modelAsStream, final Boolean useModelCache) {
     final long lStartTime = new Date().getTime();
     LemmatizerModel model = null;
     try {
       if (useModelCache) {
         synchronized (lemmaModels) {
-          if (!lemmaModels.containsKey(lang)) {
-            model = new LemmatizerModel(new FileInputStream(modelName));
+          model = lemmaModels.get(lang);
+          if (model == null) {
+            model = new LemmatizerModel(modelAsStream);
             lemmaModels.put(lang, model);
           }
         }
       } else {
-        model = new LemmatizerModel(new FileInputStream(modelName));
+        model = new LemmatizerModel(modelAsStream);
       }
     } catch (final IOException e) {
       e.printStackTrace();
@@ -179,7 +216,7 @@ public class StatisticalLemmatizer {
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
     System.err.println("ixa-pipe-lemma model loaded in: " + difference
-        + " miliseconds ... [DONE]");
+            + " miliseconds ... [DONE]");
     return model;
   }
 

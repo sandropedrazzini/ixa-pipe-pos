@@ -15,17 +15,15 @@
 
 package eus.ixa.ixa.pipe.pos;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * POS tagging module based on Apache OpenNLP machine learning API.
@@ -73,6 +71,24 @@ public class StatisticalTagger {
     final String model = props.getProperty("model");
     final Boolean useModelCache = Boolean.valueOf(props.getProperty("useModelCache", "true"));
     final POSModel posModel = loadModel(lang, model, useModelCache);
+    this.posTagger = new POSTaggerME(posModel);
+    this.morphoFactory = aMorphoFactory;
+  }
+
+  /**
+   * Construct a morphotagger with {@code MorphoFactory}.
+   *
+   * @param modelAsStream
+   *          passing the model as stream allows a more flexible classpath management
+   * @param props
+   *          the properties object
+   * @param aMorphoFactory
+   *          the morpho factory
+   */
+  public StatisticalTagger(final InputStream modelAsStream, final Properties props, final MorphoFactory aMorphoFactory) {
+    final String lang = props.getProperty("language");
+    final Boolean useModelCache = Boolean.valueOf(props.getProperty("useModelCache", "true"));
+    final POSModel posModel = loadModelAsStream(lang, modelAsStream, useModelCache);
     this.posTagger = new POSTaggerME(posModel);
     this.morphoFactory = aMorphoFactory;
   }
@@ -150,27 +166,50 @@ public class StatisticalTagger {
    * @return the model as a {@link POSModel} object
    */
   private POSModel loadModel(final String lang, final String modelName, final Boolean useModelCache) {
+    FileInputStream fileInputStream;
+    try {
+      fileInputStream = new FileInputStream(modelName);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+
+    return loadModelAsStream(lang,fileInputStream, useModelCache);
+  }
+
+  /**
+   * Loads statically the probabilistic model. Every instance of this finder
+   * will share the same model.
+   * The second argument is an already set InputStream. This allow a better classpath management.
+   *
+   * @param lang
+   *          the language
+   * @param modelAsStream
+   *          the model to be loaded
+   * @param useModelCache
+   *          whether to cache the model in memory
+   * @return the model as a {@link POSModel} object
+   */
+  private POSModel loadModelAsStream(final String lang, InputStream modelAsStream, final Boolean useModelCache) {
     final long lStartTime = new Date().getTime();
     POSModel model = null;
     try {
       if (useModelCache) {
         synchronized (posModels) {
-          if (!posModels.containsKey(lang)) {
-            model = new POSModel(new FileInputStream(modelName));
+          model = posModels.get(lang);
+          if (model == null) {
+            model = new POSModel(modelAsStream);
             posModels.put(lang, model);
-          }
+          } 
         }
       } else {
-        model = new POSModel(new FileInputStream(modelName));
+        model = new POSModel(modelAsStream);
       }
     } catch (final IOException e) {
       e.printStackTrace();
     }
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
-    System.err.println("ixa-pipe-pos model loaded in: " + difference
-        + " miliseconds ... [DONE]");
+    System.err.println("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
     return model;
   }
-
 }
