@@ -27,11 +27,11 @@ public class StatisticalTaggerTest {
     @Test
     public void testLoadWithStream() {
         MorphoFactory morphoFactory = new MorphoFactory();
-        InputStream taggerModeAsStream = StatisticalTaggerTest.class.getClassLoader().getResourceAsStream(posTaggerModelName);
+        InputStream taggerModelAsStream = StatisticalTaggerTest.class.getClassLoader().getResourceAsStream(posTaggerModelName);
         Properties prop = new Properties();
         prop.setProperty("language", "en");
         prop.setProperty("useModelCache", "false");  //used to force reload
-        StatisticalTagger posTagger = new StatisticalTagger(taggerModeAsStream, prop, morphoFactory);
+        StatisticalTagger posTagger = new StatisticalTagger(taggerModelAsStream, prop, morphoFactory);
 
         assertNotNull(posTagger);
     }

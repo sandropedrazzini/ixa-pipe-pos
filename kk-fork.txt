@@ -1,2 +1,4 @@
 Used to document kk-fork.
-This is a test commit/push to the fork.
+- Updated morfologik dependency (to 2.1.7)
+- Updated StatisticalTagger, in order to be able to pass the model InputStream from outside
+- Updated StatisticalLemmatizer, in order to be able to pass the model InputStream from outside
