@@ -4,7 +4,7 @@
 	<groupId>eus.ixa</groupId>
 	<artifactId>ixa-pipe-pos</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.3-kkfork.1.0</version>
+	<version>1.5.3-kkfork-1.0</version>
 	<name>ixa-pipe-pos</name>
 	<description>POS tagger and lemmatizer of ixa pipes (ixa2.si.ehu.es/ixa-pipes)</description>
 	<licenses>
@@ -66,11 +66,31 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
+	<!--<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>maven-snapshots</id>
+			<url>https://nexus.karakun.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
+	</distributionManagement> -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>maven-snapshots</id>
+			<name>Karakun nexus snapshots</name>
+			<url>https://nexus.karakun.com/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>maven-releases</id>
+			<name>Karakun nexus releases</name>
+			<url>https://nexus.karakun.com/repository/maven-releases/</url>
+		</repository>
+		<!--for public releases use-->
+		<!--<repository>-->
+		<!--<id>maven-public-releases</id>-->
+		<!--<name>Karakun nexus public releases</name>-->
+		<!--<url>https://nexus.karakun.com/repository/maven-public-releases/</url>-->
+		<!--</repository>-->
 	</distributionManagement>
 	<profiles>
 		<profile>
