@@ -19,6 +19,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import eus.ixa.ixa.pipe.pos.Morpheme;
 import eus.ixa.ixa.pipe.pos.MorphoFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class StatisticalLemmatizer {
-
+  private static final Logger logger = LogManager.getLogger(StatisticalLemmatizer.class);
   /**
    * The lemmatizer.
    */
@@ -80,6 +82,8 @@ public class StatisticalLemmatizer {
   /**
    * Construct a statistical lemmatizer with {@code MorphoFactory}.
    *
+   * @param modelAsStream
+   *           lemmatizer model passed as stream
    * @param props
    *          the properties object
    * @param aMorphoFactory
@@ -215,8 +219,8 @@ public class StatisticalLemmatizer {
     }
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
-    System.err.println("ixa-pipe-lemma model loaded in: " + difference
-            + " miliseconds ... [DONE]");
+
+    logger.info("ixa-pipe-lemma model loaded in: " + difference + " miliseconds ... [DONE]");
     return model;
   }
 

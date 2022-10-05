@@ -17,6 +17,8 @@ package eus.ixa.ixa.pipe.pos;
 
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class StatisticalTagger {
-
+  private static final Logger logger = LogManager.getLogger(StatisticalTagger.class);
   /**
    * The morpho tagger.
    */
@@ -209,7 +211,8 @@ public class StatisticalTagger {
     }
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
-    System.err.println("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
+    //System.err.println("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
+    logger.info("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
     return model;
   }
 }
