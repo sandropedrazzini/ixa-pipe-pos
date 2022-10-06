@@ -19,9 +19,11 @@ import opennlp.tools.util.BaseToolFactory;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.SequenceValidator;
 import opennlp.tools.util.ext.ExtensionLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LemmatizerFactory extends BaseToolFactory {
-
+  private static final Logger logger = LogManager.getLogger(LemmatizerFactory.class);
   /**
    * Creates a {@link LemmatizerFactory} that provides the default implementation
    * of the resources.
@@ -40,9 +42,9 @@ public class LemmatizerFactory extends BaseToolFactory {
           LemmatizerFactory.class, subclassName);
       return theFactory;
     } catch (Exception e) {
-      String msg = "Could not instantiate the " + subclassName
-          + ". The initialization throw an exception.";
-      System.err.println(msg);
+      String msg = "Could not instantiate the " + subclassName  + ". The initialization throw an exception.";
+
+      logger.error(msg);
       e.printStackTrace();
       throw new InvalidFormatException(msg, e);
     }

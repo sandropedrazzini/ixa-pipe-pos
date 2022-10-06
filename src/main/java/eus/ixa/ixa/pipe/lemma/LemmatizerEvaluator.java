@@ -17,6 +17,8 @@ package eus.ixa.ixa.pipe.lemma;
 
 import opennlp.tools.util.eval.Evaluator;
 import opennlp.tools.util.eval.Mean;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The {@link LemmatizerEvaluator} measures the performance of
@@ -24,6 +26,7 @@ import opennlp.tools.util.eval.Mean;
  * {@link LemmaSample}s.
  */
 public class LemmatizerEvaluator extends Evaluator<LemmaSample> {
+  private static final Logger logger = LogManager.getLogger(LemmatizerEvaluator.class);
 
   private Lemmatizer lemmatizer;
 
@@ -58,8 +61,8 @@ public class LemmatizerEvaluator extends Evaluator<LemmaSample> {
     String[] referenceLemmas = reference.getLemmas();
     
     for (int i = 0; i < referenceLemmas.length; i++) {
-      //System.err.println("-> Reference: " + referenceLemmas[i]);
-      //System.err.println("-> Predicted: " + predictedLemmas[i]);
+      logger.info("-> Reference: " + referenceLemmas[i]);
+      
       if (referenceLemmas[i].equals(predictedLemmas[i])) {
         wordAccuracy.add(1);
       }

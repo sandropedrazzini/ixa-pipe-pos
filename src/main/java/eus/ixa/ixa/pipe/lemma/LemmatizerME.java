@@ -15,19 +15,8 @@
  */
 package eus.ixa.ixa.pipe.lemma;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eus.ixa.ixa.pipe.pos.StringUtils;
-
-import opennlp.tools.ml.BeamSearch;
-import opennlp.tools.ml.EventModelSequenceTrainer;
-import opennlp.tools.ml.EventTrainer;
-import opennlp.tools.ml.SequenceTrainer;
-import opennlp.tools.ml.TrainerFactory;
+import opennlp.tools.ml.*;
 import opennlp.tools.ml.TrainerFactory.TrainerType;
 import opennlp.tools.ml.model.Event;
 import opennlp.tools.ml.model.MaxentModel;
@@ -36,6 +25,14 @@ import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.Sequence;
 import opennlp.tools.util.SequenceValidator;
 import opennlp.tools.util.TrainingParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A probabilistic lemmatizer. Tries to predict the induced permutation class
@@ -45,6 +42,7 @@ import opennlp.tools.util.TrainingParameters;
  * http://grzegorz.chrupala.me/papers/phd-single.pdf
  */
 public class LemmatizerME implements Lemmatizer {
+  private static final Logger logger = LogManager.getLogger(LemmatizerME.class);
 
   public static final int DEFAULT_BEAM_SIZE = 3;
   protected int beamSize;
@@ -132,10 +130,8 @@ public class LemmatizerME implements Lemmatizer {
   public String[] decodeLemmas(String[] toks, String[] preds) {
     List<String> lemmas = new ArrayList<String>();
     for (int i = 0; i < toks.length; i++) {
-      String lemma = StringUtils.decodeShortestEditScript(
-          toks[i].toLowerCase(), preds[i]);
-      // System.err.println("-> DEBUG: " + toks[i].toLowerCase() + " " +
-      // preds[i] + " " + lemma);
+      String lemma = StringUtils.decodeShortestEditScript(toks[i].toLowerCase(), preds[i]);
+      logger.debug("-> DEBUG: " + toks[i].toLowerCase() + " " + preds[i] + " " + lemma);
       if (lemma.length() == 0) {
         lemma = "_";
       }

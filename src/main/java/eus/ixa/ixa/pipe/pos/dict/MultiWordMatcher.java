@@ -15,29 +15,17 @@
  */
 package eus.ixa.ixa.pipe.pos.dict;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.common.base.Joiner;
+import eus.ixa.ixa.pipe.pos.StringUtils;
+import opennlp.tools.util.Span;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import opennlp.tools.util.Span;
-
-import com.google.common.base.Joiner;
-
-import eus.ixa.ixa.pipe.pos.StringUtils;
 
 /**
  * Reads a dictionary multiword\tmultiwordlemma\tpostag\tambiguity and matches
@@ -48,7 +36,8 @@ import eus.ixa.ixa.pipe.pos.StringUtils;
  * 
  */
 public class MultiWordMatcher {
-
+  private static final Logger logger = LogManager.getLogger(MultiWordMatcher.class);
+  
   private static final Pattern tabPattern = Pattern.compile("\t");
   private static final Pattern linePattern = Pattern.compile("#");
   private static Map<String, String> dictionary;
@@ -82,8 +71,7 @@ public class MultiWordMatcher {
     final InputStream dictInputStream = getMultiWordDict(lang, resourcesDirectory);
     if (dictInputStream == null) {
       final String resourcesLocation = resourcesDirectory == null ? "src/main/resources" : resourcesDirectory;
-      System.err.println("ERROR: Not multiword dictionary for language " + lang
-          + " in " + resourcesLocation + "!!");
+      logger.error("ERROR: Not multiword dictionary for language " + lang + " in " + resourcesLocation + "!!");
       System.exit(1);
     }
     final BufferedReader breader = new BufferedReader(new InputStreamReader(
@@ -96,8 +84,7 @@ public class MultiWordMatcher {
             .toLowerCase());
         dictionary.put(lineMatcher.replaceAll(" "), lineArray[2]);
       } else {
-        System.err.println("WARNING: line starting with " + lineArray[0]
-            + " is not well-formed; skipping!!");
+        logger.warn("WARNING: line starting with " + lineArray[0] + " is not well-formed; skipping!!");
       }
     }
   }
@@ -158,7 +145,7 @@ public class MultiWordMatcher {
     for (final Span mwSpan : multiWordSpans) {
       final int fromIndex = mwSpan.getStart() - counter;
       final int toIndex = mwSpan.getEnd() - counter;
-      // System.err.println(fromIndex + " " + toIndex);
+      logger.info(fromIndex + " " + toIndex);
       // add to the counter the length of the sublist removed
       // to allow the fromIndex and toIndex to match wrt to the tokenList
       // indexes
@@ -186,7 +173,7 @@ public class MultiWordMatcher {
 
     for (int offsetFrom = 0; offsetFrom < tokens.length; offsetFrom++) {
       Span multiwordFound = null;
-      String tokensSearching[] = new String[] {};
+      String[] tokensSearching;
 
       for (int offsetTo = offsetFrom; offsetTo < tokens.length; offsetTo++) {
 

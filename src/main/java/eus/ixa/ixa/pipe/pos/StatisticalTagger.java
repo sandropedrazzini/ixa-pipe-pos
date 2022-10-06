@@ -211,7 +211,6 @@ public class StatisticalTagger {
     }
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
-    //System.err.println("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
     logger.info("ixa-pipe-pos model loaded in: " + difference  + " miliseconds ... [DONE]");
     return model;
   }

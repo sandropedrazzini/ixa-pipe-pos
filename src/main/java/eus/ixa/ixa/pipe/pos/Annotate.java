@@ -16,25 +16,24 @@
 
 package eus.ixa.ixa.pipe.pos;
 
+import com.google.common.collect.ListMultimap;
+import eus.ixa.ixa.pipe.lemma.StatisticalLemmatizer;
+import eus.ixa.ixa.pipe.lemma.dict.MorfologikLemmatizer;
+import eus.ixa.ixa.pipe.pos.dict.DictionaryTagger;
+import eus.ixa.ixa.pipe.pos.dict.MorfologikTagger;
+import eus.ixa.ixa.pipe.pos.dict.MultiWordMatcher;
 import ixa.kaflib.KAFDocument;
 import ixa.kaflib.Term;
 import ixa.kaflib.WF;
+import opennlp.tools.util.Span;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import opennlp.tools.util.Span;
-
-import com.google.common.collect.ListMultimap;
-
-import eus.ixa.ixa.pipe.lemma.StatisticalLemmatizer;
-import eus.ixa.ixa.pipe.lemma.dict.MorfologikLemmatizer;
-import eus.ixa.ixa.pipe.pos.dict.DictionaryTagger;
-import eus.ixa.ixa.pipe.pos.dict.MorfologikTagger;
-import eus.ixa.ixa.pipe.pos.dict.MultiWordMatcher;
 
 /**
  * Example annotation class of ixa-pipe-pos. Check this class for examples using
@@ -44,7 +43,7 @@ import eus.ixa.ixa.pipe.pos.dict.MultiWordMatcher;
  * @version 2014-12-05
  */
 public class Annotate {
-
+  private static final Logger logger = LogManager.getLogger(Annotate.class);
   /**
    * The morpho tagger.
    */
@@ -121,9 +120,7 @@ public class Annotate {
     final URL binLemmatizerURL = resources.getBinaryDict(this.lang, resourcesDirectory);
     if (binLemmatizerURL == null) {
       final String resourcesLocation = resourcesDirectory == null ? "src/main/resources" : resourcesDirectory;
-      System.err
-          .println("WARNING: No lemmatizer dictionary available for language "
-              + this.lang + " in " + resourcesLocation + "!");
+      logger.warn("WARNING: No lemmatizer dictionary available for language " + this.lang + " in " + resourcesLocation + "!");
     } else {
       try {
         this.dictLemmatizer = new MorfologikLemmatizer(binLemmatizerURL);
@@ -148,9 +145,7 @@ public class Annotate {
     final URL binDictMorphoTaggerURL = resources.getBinaryTaggerDict(this.lang, resourcesDirectory);
     if (binDictMorphoTaggerURL == null) {
       final String resourcesLocation = resourcesDirectory == null ? "src/main/resources" : resourcesDirectory;
-      System.err
-          .println("ERROR: No binary POS tagger dictionary available for language "
-              + this.lang + " in " + resourcesLocation + "!!");
+      logger.error("ERROR: No binary POS tagger dictionary available for language " + this.lang + " in " + resourcesLocation + "!!");
       System.exit(1);
     }
     try {

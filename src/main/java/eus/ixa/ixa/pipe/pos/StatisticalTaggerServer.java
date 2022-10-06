@@ -16,25 +16,19 @@
 
 package eus.ixa.ixa.pipe.pos;
 
+import com.google.common.io.Files;
 import ixa.kaflib.KAFDocument;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jdom2.JDOMException;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
 
-import org.jdom2.JDOMException;
-
-import com.google.common.io.Files;
-
 public class StatisticalTaggerServer {
-  
+  private static final Logger logger = LogManager.getLogger(StatisticalTaggerServer.class);
   /**
    * Get dynamically the version of ixa-pipe-pos by looking at the MANIFEST
    * file.
@@ -79,9 +73,9 @@ public class StatisticalTaggerServer {
 
     try {
       Annotate annotator = new Annotate(properties);
-      System.out.println("-> Trying to listen port... " + port);
+      logger.info("-> Trying to listen port... " + port);
       socketServer = new ServerSocket(port);
-      System.out.println("-> Connected and listening to port " + port);
+      logger.info("-> Connected and listening to port " + port);
       while (true) {
         try {
           activeSocket = socketServer.accept();
@@ -112,9 +106,9 @@ public class StatisticalTaggerServer {
       } //end of processing block
     } catch (IOException e) {
       e.printStackTrace();
-      System.err.println("-> IOException due to failing to create the TCP socket or to wrongly provided model path.");
+      logger.error("-> IOException due to failing to create the TCP socket or to wrongly provided model path.");
     } finally {
-      System.out.println("closing tcp socket...");
+      logger.info("closing tcp socket...");
       try {
         socketServer.close();
       } catch (IOException e) {
@@ -167,12 +161,12 @@ public class StatisticalTaggerServer {
    * @throws JDOMException if xml error
    */
   private String getAnnotations(Annotate annotator, String stringFromClient) throws IOException, JDOMException {
-  //get a breader from the string coming from the client
+    //get a breader from the string coming from the client
     BufferedReader clientReader = new BufferedReader(new StringReader(stringFromClient));
     KAFDocument kaf = KAFDocument.createFromStream(clientReader);
     final KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-        "terms", "ixa-pipe-pos-" + Files.getNameWithoutExtension(model),
-        this.version + "-" + this.commit);
+            "terms", "ixa-pipe-pos-" + Files.getNameWithoutExtension(model),
+            this.version + "-" + this.commit);
     newLp.setBeginTimestamp();
     String kafToString = null;
     if (allMorphology) {
@@ -194,5 +188,4 @@ public class StatisticalTaggerServer {
     }
     return kafToString;
   }
-
 }

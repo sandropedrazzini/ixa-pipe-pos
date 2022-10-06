@@ -16,15 +16,16 @@
 
 package eus.ixa.ixa.pipe.pos;
 
+import com.google.common.io.Files;
+import opennlp.tools.util.Span;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-import opennlp.tools.util.Span;
-
-import com.google.common.io.Files;
 
 /**
  * Pattern matching and other utility string functions.
@@ -33,7 +34,7 @@ import com.google.common.io.Files;
  * @version 2013-03-19
  */
 public final class StringUtils {
-
+    private static final Logger logger = LogManager.getLogger(StringUtils.class);
   /**
    * Private constructor.
    */
@@ -330,7 +331,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
         }
         //read first letter of permutation string
         char nextOperation = permutations.charAt(permIndex);
-        //System.err.println("-> NextOP: " + nextOperation);
+        logger.info("-> NextOP: " + nextOperation);
         //go to the next permutation letter
         permIndex++;
         if (nextOperation == 'R') {
@@ -351,7 +352,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
             if (lemma.charAt(charIndex) == replace) {
               lemma.setCharAt(charIndex, with);
             }
-            //System.err.println("-> ROP: " + lemma.toString());
+            logger.info("-> ROP: " + lemma);
             //go to next permutation
             permIndex++;
             
@@ -366,7 +367,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
               return wordForm; 
             }
             lemma.insert(charIndex, in);
-            //System.err.println("-> IOP " + lemma.toString());
+            logger.info("-> IOP " + lemma);
             //go to next permutation
             permIndex++;
         } else if (nextOperation == 'D') {
@@ -404,6 +405,4 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
     }
     return ses;
   }
-
-
 }
