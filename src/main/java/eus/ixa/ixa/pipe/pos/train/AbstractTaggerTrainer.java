@@ -15,22 +15,17 @@
  */
 package eus.ixa.ixa.pipe.pos.train;
 
-import java.io.File;
-import java.io.IOException;
-
 import eus.ixa.ixa.pipe.pos.MorphoSampleStream;
-
 import opennlp.tools.cmdline.TerminateToolException;
 import opennlp.tools.dictionary.Dictionary;
-import opennlp.tools.postag.MutableTagDictionary;
-import opennlp.tools.postag.POSEvaluator;
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSSample;
-import opennlp.tools.postag.POSTaggerFactory;
-import opennlp.tools.postag.POSTaggerME;
-import opennlp.tools.postag.TagDictionary;
+import opennlp.tools.postag.*;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.TrainingParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Training POS tagger with Apache OpenNLP Machine Learning API.
@@ -40,7 +35,7 @@ import opennlp.tools.util.TrainingParameters;
  */
 
 public abstract class AbstractTaggerTrainer implements TaggerTrainer {
-
+  private static final Logger logger = LogManager.getLogger(AbstractTaggerTrainer.class);
   /**
    * The language.
    */
@@ -123,7 +118,7 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
       posEvaluator = new POSEvaluator(posTagger);
       posEvaluator.evaluate(this.testSamples);
     } catch (final IOException e) {
-      System.err.println("IO error while loading training and test sets!");
+      logger.error("IO error while loading training and test sets!");
       e.printStackTrace();
       System.exit(1);
     }
@@ -195,7 +190,7 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
       final ObjectStream<POSSample> aDictSamples, final int aNgramCutoff) {
     Dictionary ngramDict = null;
     if (aNgramCutoff != Flags.DEFAULT_DICT_CUTOFF) {
-      System.err.print("Building ngram dictionary ... ");
+      logger.info("Building ngram dictionary ... ");
       try {
         ngramDict = POSTaggerME
             .buildNGramDictionary(aDictSamples, aNgramCutoff);
@@ -204,7 +199,7 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
         throw new TerminateToolException(-1,
             "IO error while building NGram Dictionary: " + e.getMessage(), e);
       }
-      System.err.println("done");
+      logger.info("done");
     }
     return ngramDict;
   }

@@ -16,20 +16,14 @@
 
 package eus.ixa.ixa.pipe.pos.train;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import opennlp.tools.cmdline.CmdLineUtil;
 import opennlp.tools.cmdline.TerminateToolException;
 import opennlp.tools.ml.TrainerFactory;
-import opennlp.tools.util.InputStreamFactory;
-import opennlp.tools.util.MarkableFileInputStreamFactory;
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.PlainTextByLineStream;
-import opennlp.tools.util.TrainingParameters;
+import opennlp.tools.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 
 /**
  * Utility functions to read and save ObjectStreams.
@@ -39,7 +33,7 @@ import opennlp.tools.util.TrainingParameters;
  * 
  */
 public final class InputOutputUtils {
-
+  private static final Logger logger = LogManager.getLogger(InputOutputUtils.class);
   /**
    * Private constructor. This class should only be used statically.
    */
@@ -116,7 +110,7 @@ public final class InputOutputUtils {
             paramsIn.close();
           }
         } catch (final IOException e) {
-          System.err.println("Error closing the input stream");
+          logger.error("Error closing the input stream");
         }
       }
 

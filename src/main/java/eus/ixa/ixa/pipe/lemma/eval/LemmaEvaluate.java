@@ -16,18 +16,16 @@
 
 package eus.ixa.ixa.pipe.lemma.eval;
 
+import eus.ixa.ixa.pipe.lemma.*;
+import eus.ixa.ixa.pipe.pos.eval.Evaluate;
+import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
+import opennlp.tools.util.ObjectStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import opennlp.tools.util.ObjectStream;
-import eus.ixa.ixa.pipe.lemma.LemmaSample;
-import eus.ixa.ixa.pipe.lemma.LemmaSampleStream;
-import eus.ixa.ixa.pipe.lemma.LemmatizerEvaluator;
-import eus.ixa.ixa.pipe.lemma.LemmatizerME;
-import eus.ixa.ixa.pipe.lemma.LemmatizerModel;
-import eus.ixa.ixa.pipe.pos.eval.Evaluate;
-import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
 
 /**
  * Evaluation class.
@@ -36,7 +34,7 @@ import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
  * @version 2014-07-08
  */
 public class LemmaEvaluate implements Evaluate {
-
+  private static final Logger logger = LogManager.getLogger(LemmaEvaluate.class);
   /**
    * The reference corpus to evaluate against.
    */
@@ -78,7 +76,7 @@ public class LemmaEvaluate implements Evaluate {
         try {
           trainedModelInputStream.close();
         } catch (final IOException e) {
-          System.err.println("Could not load model!");
+          logger.error("Could not load model!");
         }
       }
     }

@@ -16,23 +16,21 @@
 
 package eus.ixa.ixa.pipe.pos.eval;
 
+import eus.ixa.ixa.pipe.pos.MorphoSampleStream;
+import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
+import opennlp.tools.cmdline.postag.POSEvaluationErrorListener;
+import opennlp.tools.cmdline.postag.POSTaggerFineGrainedReportListener;
+import opennlp.tools.postag.*;
+import opennlp.tools.util.ObjectStream;
+import opennlp.tools.util.eval.EvaluationMonitor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-
-import opennlp.tools.cmdline.postag.POSEvaluationErrorListener;
-import opennlp.tools.cmdline.postag.POSTaggerFineGrainedReportListener;
-import opennlp.tools.postag.POSEvaluator;
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSSample;
-import opennlp.tools.postag.POSTaggerEvaluationMonitor;
-import opennlp.tools.postag.POSTaggerME;
-import eus.ixa.ixa.pipe.pos.MorphoSampleStream;
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.eval.EvaluationMonitor;
-import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
 
 /**
  * Evaluation class mostly inspired by {@link POSEvaluator}.
@@ -41,7 +39,7 @@ import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
  * @version 2014-07-08
  */
 public class POSEvaluate implements Evaluate {
-
+  private static final Logger logger = LogManager.getLogger(POSEvaluate.class);
   /**
    * The reference corpus to evaluate against.
    */
@@ -83,7 +81,7 @@ public class POSEvaluate implements Evaluate {
         try {
           trainedModelInputStream.close();
         } catch (final IOException e) {
-          System.err.println("Could not load model!");
+          logger.error("Could not load model!");
         }
       }
     }

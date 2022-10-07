@@ -16,18 +16,15 @@
 
 package eus.ixa.ixa.pipe.lemma.train;
 
-import java.io.IOException;
-
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.TrainingParameters;
-import eus.ixa.ixa.pipe.lemma.LemmaSample;
-import eus.ixa.ixa.pipe.lemma.LemmaSampleStream;
-import eus.ixa.ixa.pipe.lemma.LemmatizerEvaluator;
-import eus.ixa.ixa.pipe.lemma.LemmatizerFactory;
-import eus.ixa.ixa.pipe.lemma.LemmatizerME;
-import eus.ixa.ixa.pipe.lemma.LemmatizerModel;
+import eus.ixa.ixa.pipe.lemma.*;
 import eus.ixa.ixa.pipe.pos.train.Flags;
 import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
+import opennlp.tools.util.ObjectStream;
+import opennlp.tools.util.TrainingParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * Training a Lemmatizer.
@@ -37,7 +34,7 @@ import eus.ixa.ixa.pipe.pos.train.InputOutputUtils;
  */
 
 public abstract class AbstractLemmatizerTrainer implements LemmatizerTrainer {
-
+  private static final Logger logger = LogManager.getLogger(AbstractLemmatizerTrainer.class);
   /**
    * The language.
    */
@@ -93,7 +90,7 @@ public abstract class AbstractLemmatizerTrainer implements LemmatizerTrainer {
       lemmatizerEvaluator = new LemmatizerEvaluator(lemmatizer);
       lemmatizerEvaluator.evaluate(this.testSamples);
     } catch (final IOException e) {
-      System.err.println("IO error while loading training and test sets!");
+      logger.error("IO error while loading training and test sets!");
       e.printStackTrace();
       System.exit(1);
     }

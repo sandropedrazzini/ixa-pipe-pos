@@ -16,8 +16,11 @@
 package eus.ixa.ixa.pipe.pos.train;
 
 import opennlp.tools.util.TrainingParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Flags {
+  private static final Logger logger = LogManager.getLogger(Flags.class);
   /**
    * Default beam size for decoding.
    */
@@ -150,43 +153,36 @@ public class Flags {
   }
 
   public static void componentException() {
-    System.err
-        .println("Please provide a component name in the Component field in the parameters file!");
+    logger.error("Please provide a component name in the Component field in the parameters file!");
     System.exit(1);
   }
   public static void modelException() {
-    System.err
-        .println("Please provide a model in the OutputModel field in the parameters file!");
+    logger.error("Please provide a model in the OutputModel field in the parameters file!");
     System.exit(1);
   }
 
   public static void langException() {
-    System.err
-        .println("Please fill in the Language field in the parameters file!");
+    logger.error("Please fill in the Language field in the parameters file!");
     System.exit(1);
   }
 
   public static void datasetException() {
-    System.err
-        .println("Please specify your training/testing sets in the TrainSet and TestSet fields in the parameters file!");
+    logger.error("Please specify your training/testing sets in the TrainSet and TestSet fields in the parameters file!");
     System.exit(1);
   }
 
   public static void corpusFormatException() {
-    System.err
-        .println("Please fill in CorpusFormat field in the parameters file!");
+    logger.error("Please fill in CorpusFormat field in the parameters file!");
     System.exit(1);
   }
 
   public static void dictionaryException() {
-    System.err
-        .println("You need to set the --dictPath option to the dictionaries directory to use the dictTag option!");
+    logger.error("You need to set the --dictPath option to the dictionaries directory to use the dictTag option!");
     System.exit(1);
   }
 
   public static void dictionaryFeaturesException() {
-    System.err
-        .println("You need to specify the DictionaryFeatures in the parameters file to use the DictionaryPath!");
+    logger.error("You need to specify the DictionaryFeatures in the parameters file to use the DictionaryPath!");
     System.exit(1);
   }
 
