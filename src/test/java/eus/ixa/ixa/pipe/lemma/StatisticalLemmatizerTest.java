@@ -36,5 +36,8 @@ public class StatisticalLemmatizerTest {
         StatisticalLemmatizer lemmatizer = new StatisticalLemmatizer(lemmatizerModelAsStream, prop, morphoFactory);
 
         assertNotNull(lemmatizer);
+
+        //used just to provide some more logs
+        lemmatizer.lemmatize(new String[]{"the", "cat"}, new String[]{"DET", "NOUN"});
     }
 }

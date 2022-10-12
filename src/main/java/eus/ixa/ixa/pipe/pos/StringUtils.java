@@ -331,7 +331,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
         }
         //read first letter of permutation string
         char nextOperation = permutations.charAt(permIndex);
-        logger.info("-> NextOP: " + nextOperation);
+        logger.debug("-> NextOP: " + nextOperation);
         //go to the next permutation letter
         permIndex++;
         if (nextOperation == 'R') {
@@ -352,7 +352,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
             if (lemma.charAt(charIndex) == replace) {
               lemma.setCharAt(charIndex, with);
             }
-            logger.info("-> ROP: " + lemma);
+            logger.debug("-> ROP: " + lemma);
             //go to next permutation
             permIndex++;
             
@@ -367,7 +367,7 @@ public static void computeShortestEditScript(String wordForm, String lemma, int[
               return wordForm; 
             }
             lemma.insert(charIndex, in);
-            logger.info("-> IOP " + lemma);
+            logger.debug("-> IOP " + lemma);
             //go to next permutation
             permIndex++;
         } else if (nextOperation == 'D') {

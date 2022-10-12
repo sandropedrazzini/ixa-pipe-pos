@@ -220,7 +220,7 @@ public class StatisticalLemmatizer {
     final long lEndTime = new Date().getTime();
     final long difference = lEndTime - lStartTime;
 
-    logger.info("ixa-pipe-lemma model loaded in: " + difference + " miliseconds ... [DONE]");
+    logger.debug("ixa-pipe-lemma model loaded in: " + difference + " miliseconds ... [DONE]");
     return model;
   }
 

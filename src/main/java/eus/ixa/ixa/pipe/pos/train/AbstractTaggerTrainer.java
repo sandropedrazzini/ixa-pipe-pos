@@ -190,7 +190,7 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
       final ObjectStream<POSSample> aDictSamples, final int aNgramCutoff) {
     Dictionary ngramDict = null;
     if (aNgramCutoff != Flags.DEFAULT_DICT_CUTOFF) {
-      logger.info("Building ngram dictionary ... ");
+      logger.debug("Building ngram dictionary ... ");
       try {
         ngramDict = POSTaggerME
             .buildNGramDictionary(aDictSamples, aNgramCutoff);
@@ -199,7 +199,7 @@ public abstract class AbstractTaggerTrainer implements TaggerTrainer {
         throw new TerminateToolException(-1,
             "IO error while building NGram Dictionary: " + e.getMessage(), e);
       }
-      logger.info("done");
+      logger.debug("done");
     }
     return ngramDict;
   }

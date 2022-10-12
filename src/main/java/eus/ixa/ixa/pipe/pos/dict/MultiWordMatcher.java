@@ -145,7 +145,7 @@ public class MultiWordMatcher {
     for (final Span mwSpan : multiWordSpans) {
       final int fromIndex = mwSpan.getStart() - counter;
       final int toIndex = mwSpan.getEnd() - counter;
-      logger.info(fromIndex + " " + toIndex);
+      logger.debug(fromIndex + " " + toIndex);
       // add to the counter the length of the sublist removed
       // to allow the fromIndex and toIndex to match wrt to the tokenList
       // indexes

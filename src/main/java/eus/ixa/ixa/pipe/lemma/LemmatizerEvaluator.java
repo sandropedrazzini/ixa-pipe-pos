@@ -61,7 +61,7 @@ public class LemmatizerEvaluator extends Evaluator<LemmaSample> {
     String[] referenceLemmas = reference.getLemmas();
     
     for (int i = 0; i < referenceLemmas.length; i++) {
-      logger.info("-> Reference: " + referenceLemmas[i]);
+      logger.debug("-> Reference: " + referenceLemmas[i]);
       
       if (referenceLemmas[i].equals(predictedLemmas[i])) {
         wordAccuracy.add(1);

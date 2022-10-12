@@ -73,9 +73,9 @@ public class StatisticalTaggerServer {
 
     try {
       Annotate annotator = new Annotate(properties);
-      logger.info("-> Trying to listen port... " + port);
+      logger.debug("-> Trying to listen port... " + port);
       socketServer = new ServerSocket(port);
-      logger.info("-> Connected and listening to port " + port);
+      logger.debug("-> Connected and listening to port " + port);
       while (true) {
         try {
           activeSocket = socketServer.accept();
@@ -108,7 +108,7 @@ public class StatisticalTaggerServer {
       e.printStackTrace();
       logger.error("-> IOException due to failing to create the TCP socket or to wrongly provided model path.");
     } finally {
-      logger.info("closing tcp socket...");
+      logger.debug("closing tcp socket...");
       try {
         socketServer.close();
       } catch (IOException e) {
